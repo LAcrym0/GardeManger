@@ -12,7 +12,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Garde Manger";
         // Do any additional setup after loading the view, typically from a nib.
     }
 
