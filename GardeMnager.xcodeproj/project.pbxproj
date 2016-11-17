@@ -15,6 +15,8 @@
 		C3DF87991DDCAEC7005EE858 /* GardeMnagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF87981DDCAEC7005EE858 /* GardeMnagerTests.swift */; };
 		C3DF87A41DDCAEC7005EE858 /* GardeMnagerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF87A31DDCAEC7005EE858 /* GardeMnagerUITests.swift */; };
 		C3DF87B21DDCB2C8005EE858 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3DF87B11DDCB2C8005EE858 /* Main.storyboard */; };
+		C3FDFD591DDE29C5006273BA /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FDFD581DDE29C5006273BA /* DataManager.swift */; };
+		C3FDFD5B1DDE2A71006273BA /* FileManager+Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3FDFD5A1DDE2A71006273BA /* FileManager+Document.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		C3DF87A31DDCAEC7005EE858 /* GardeMnagerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardeMnagerUITests.swift; sourceTree = "<group>"; };
 		C3DF87A51DDCAEC7005EE858 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3DF87B11DDCB2C8005EE858 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		C3FDFD581DDE29C5006273BA /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		C3FDFD5A1DDE2A71006273BA /* FileManager+Document.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+Document.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,8 @@
 				C3DF878F1DDCAEC7005EE858 /* Info.plist */,
 				C3DF87871DDCAEC7005EE858 /* GardeMnager.xcdatamodeld */,
 				C3DF87B11DDCB2C8005EE858 /* Main.storyboard */,
+				C3FDFD581DDE29C5006273BA /* DataManager.swift */,
+				C3FDFD5A1DDE2A71006273BA /* FileManager+Document.swift */,
 			);
 			path = GardeMnager;
 			sourceTree = "<group>";
@@ -263,8 +269,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3DF87891DDCAEC7005EE858 /* GardeMnager.xcdatamodeld in Sources */,
+				C3FDFD591DDE29C5006273BA /* DataManager.swift in Sources */,
 				C3DF87831DDCAEC7005EE858 /* ViewController.swift in Sources */,
 				C3DF87811DDCAEC7005EE858 /* AppDelegate.swift in Sources */,
+				C3FDFD5B1DDE2A71006273BA /* FileManager+Document.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,6 +509,7 @@
 				C3DF87AA1DDCAEC7005EE858 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3DF87AB1DDCAEC7005EE858 /* Build configuration list for PBXNativeTarget "GardeMnagerTests" */ = {
 			isa = XCConfigurationList;
@@ -509,6 +518,7 @@
 				C3DF87AD1DDCAEC7005EE858 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C3DF87AE1DDCAEC7005EE858 /* Build configuration list for PBXNativeTarget "GardeMnagerUITests" */ = {
 			isa = XCConfigurationList;
@@ -517,6 +527,7 @@
 				C3DF87B01DDCAEC7005EE858 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nL7-ZD-mUa">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="d1m-zx-H5e">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -9,40 +9,42 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Garde Manger-->
-        <scene sceneID="jgB-6v-RV6">
+        <!--View Controller-->
+        <scene sceneID="h0b-15-Cw8">
             <objects>
-                <tableViewController id="GrM-0V-H0s" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="mm8-IX-jcv">
-                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                <viewController id="HCW-WA-VZb" customClass="ViewController" customModule="GardeMnager" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qj2-St-oJo"/>
+                        <viewControllerLayoutGuide type="bottom" id="aCN-il-xf3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="LAk-DO-joF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <connections>
-                            <outlet property="dataSource" destination="GrM-0V-H0s" id="m2f-Xu-2RH"/>
-                            <outlet property="delegate" destination="GrM-0V-H0s" id="3EV-Pn-6M9"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Garde Manger" id="epl-42-BP6"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nqi-7K-qPb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="cB2-ct-OMU"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aZT-58-evn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="465" y="-260"/>
+            <point key="canvasLocation" x="1868" y="-538.38080959520244"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="Xgw-OA-9Uz">
+        <scene sceneID="och-Tw-f83">
             <objects>
-                <navigationController id="nL7-ZD-mUa" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" translucent="NO" id="e7o-d0-Qla">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="d1m-zx-H5e" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="VQ7-PK-m5n">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
+                    <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="GrM-0V-H0s" kind="relationship" relationship="rootViewController" id="Z0g-W8-nlw"/>
+                        <segue destination="HCW-WA-VZb" kind="relationship" relationship="rootViewController" id="TrN-IX-ZY8"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8pO-55-dRc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="teo-r8-1Gg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-490" y="-260"/>
+            <point key="canvasLocation" x="928.79999999999995" y="-538.38080959520244"/>
         </scene>
     </scenes>
 </document>
