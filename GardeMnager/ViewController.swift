@@ -19,15 +19,28 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         if let context = DataManager.shared.objectContext {
+            
             self.context = context
-            let tomatoes = Ingredient(context: context)
-            tomatoes.name = "Tomates"
-            tomatoes.quantity = 5
-            let eggs = Ingredient(context: context)
-            eggs.name = "Oeufs"
-            eggs.quantity = 18
-            ingredients.append(tomatoes)
-            ingredients.append(eggs)
+            let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
+            if let ingredientsBDD = try? context.fetch(request) {
+                for i in ingredientsBDD {
+                    let item = Ingredient(context: context)
+                    item.name = i.name
+                    item.quantity = i.quantity
+                    ingredients.append(item)
+                }
+            }
+            print("#######")
+            print(ingredients.count)
+            print("#######")
+//            let tomatoes = Ingredient(context: context)
+//            tomatoes.name = "Tomates"
+//            tomatoes.quantity = 5
+//            let eggs = Ingredient(context: context)
+//            eggs.name = "Oeufs"
+//            eggs.quantity = 18
+//            ingredients.append(tomatoes)
+//            ingredients.append(eggs)
         }
         
         let tableView = UITableView(frame: view.bounds)
@@ -68,16 +81,28 @@ class ViewController: UIViewController {
         
         // 3. Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-            let textField = alert.textFields![0] // Force unwrapping because we know it exists.
+            let ingredientField = alert.textFields![0] // Force unwrapping because we know it exists.
+            let quantityField = alert.textFields![1]
             //print("Text field: \(textField.text)")
             if (self.context != nil) {
                 let ingredient = Ingredient(context: self.context!)
-                ingredient.name = textField.text
+                ingredient.name = ingredientField.text
                 ingredient.quantity = 18
                 self.ingredients.append(ingredient)
                 self.tableView.reloadData()
+                try! self.context?.save()
                 //todo manage quantities
             }
+            print("start")
+            if let context = DataManager.shared.objectContext {
+                let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
+                if let ingredients = try? context.fetch(request) {
+                    for i in ingredients {
+                        print(i.name!)
+                    }
+                }
+            }
+            print("end")
         }))
         
         // 4. Present the alert.
