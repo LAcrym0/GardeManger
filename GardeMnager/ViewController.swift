@@ -23,12 +23,7 @@ class ViewController: UIViewController {
             self.context = context
             let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
             if let ingredientsBDD = try? context.fetch(request) {
-                for i in ingredientsBDD {
-                    let item = Ingredient(context: context)
-                    item.name = i.name
-                    item.quantity = i.quantity
-                    ingredients.append(item)
-                }
+                ingredients.append(contentsOf: ingredientsBDD)
             }
             print("#######")
             print(ingredients.count)
@@ -85,29 +80,65 @@ class ViewController: UIViewController {
             let quantityField = alert.textFields![1]
             //print("Text field: \(textField.text)")
             if (self.context != nil) {
-                let ingredient = Ingredient(context: self.context!)
-                ingredient.name = ingredientField.text
-                ingredient.quantity = 18
-                self.ingredients.append(ingredient)
+                let index = self.findIngredientIndex(name: ingredientField.text!)
+                if (index == -1) {
+                    let ingredient = Ingredient(context: self.context!)
+                    ingredient.name = ingredientField.text
+                    ingredient.quantity = Int32((quantityField.text! as NSString).integerValue)
+                    self.ingredients.append(ingredient)
+                } else {
+                    self.ingredients[index].quantity += Int32((quantityField.text! as NSString).integerValue)
+                }
                 self.tableView.reloadData()
                 try! self.context?.save()
-                //todo manage quantities
             }
             print("start")
-            if let context = DataManager.shared.objectContext {
+            /*if let context = DataManager.shared.objectContext {
                 let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
                 if let ingredients = try? context.fetch(request) {
                     for i in ingredients {
                         print(i.name!)
                     }
                 }
-            }
+            }*/
             print("end")
         }))
         
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }
+    
+    /**
+    * This method returns the index of the ingredient of a defined name, otherwise -1
+    * @param The name of the ingredient to search
+    * @return The index or -1
+    */
+    func findIngredientIndex(name: String) -> Int {
+        for i in 0 ..< ingredients.count {
+            if (ingredients[i].name == name) {
+                return i
+            }
+        }
+        return -1
+        
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.context?.delete(ingredients[indexPath.row])
+            ingredients.remove(at: indexPath.row)
+            
+            do {
+                try self.context?.save()
+            } catch let error as NSError {
+                print("Error While Deleting Note: \(error.userInfo)")
+            }
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            //try! self.context?.save()
+            //TODO save if because the previous line doesn't not save the deletion
+        }
+    }
+
     
 
 
@@ -134,5 +165,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         // Returning the cell
         return cell
     }
+    
 }
 
