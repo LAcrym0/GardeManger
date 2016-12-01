@@ -28,14 +28,14 @@ class ViewController: UIViewController {
             print("#######")
             print(ingredients.count)
             print("#######")
-//            let tomatoes = Ingredient(context: context)
-//            tomatoes.name = "Tomates"
-//            tomatoes.quantity = 5
-//            let eggs = Ingredient(context: context)
-//            eggs.name = "Oeufs"
-//            eggs.quantity = 18
-//            ingredients.append(tomatoes)
-//            ingredients.append(eggs)
+            //            let tomatoes = Ingredient(context: context)
+            //            tomatoes.name = "Tomates"
+            //            tomatoes.quantity = 5
+            //            let eggs = Ingredient(context: context)
+            //            eggs.name = "Oeufs"
+            //            eggs.quantity = 18
+            //            ingredients.append(tomatoes)
+            //            ingredients.append(eggs)
         }
         
         let tableView = UITableView(frame: view.bounds)
@@ -52,7 +52,7 @@ class ViewController: UIViewController {
         
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -74,10 +74,17 @@ class ViewController: UIViewController {
             quantityTextField.keyboardType = UIKeyboardType.numberPad
         }
         
+        alert.addTextField { (imageUrlTextField) in
+            imageUrlTextField.text = ""
+            imageUrlTextField.placeholder = "URL de l'image"
+            imageUrlTextField.keyboardType = UIKeyboardType.URL
+        }
+        
         // 3. Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             let ingredientField = alert.textFields![0] // Force unwrapping because we know it exists.
             let quantityField = alert.textFields![1]
+            let imageUrlField = alert.textFields![2]
             //print("Text field: \(textField.text)")
             if (self.context != nil) {
                 let index = self.findIngredientIndex(name: ingredientField.text!)
@@ -85,6 +92,7 @@ class ViewController: UIViewController {
                     let ingredient = Ingredient(context: self.context!)
                     ingredient.name = ingredientField.text
                     ingredient.quantity = Int32((quantityField.text! as NSString).integerValue)
+                    ingredient.imageUrl = imageUrlField.text
                     self.ingredients.append(ingredient)
                 } else {
                     self.ingredients[index].quantity += Int32((quantityField.text! as NSString).integerValue)
@@ -94,13 +102,13 @@ class ViewController: UIViewController {
             }
             print("start")
             /*if let context = DataManager.shared.objectContext {
-                let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
-                if let ingredients = try? context.fetch(request) {
-                    for i in ingredients {
-                        print(i.name!)
-                    }
-                }
-            }*/
+             let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
+             if let ingredients = try? context.fetch(request) {
+             for i in ingredients {
+             print(i.name!)
+             }
+             }
+             }*/
             print("end")
         }))
         
@@ -109,10 +117,10 @@ class ViewController: UIViewController {
     }
     
     /**
-    * This method returns the index of the ingredient of a defined name, otherwise -1
-    * @param The name of the ingredient to search
-    * @return The index or -1
-    */
+     * This method returns the index of the ingredient of a defined name, otherwise -1
+     * @param The name of the ingredient to search
+     * @return The index or -1
+     */
     func findIngredientIndex(name: String) -> Int {
         for i in 0 ..< ingredients.count {
             if (ingredients[i].name == name) {
@@ -138,10 +146,10 @@ class ViewController: UIViewController {
             //TODO save if because the previous line doesn't not save the deletion
         }
     }
-
     
-
-
+    
+    
+    
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
@@ -159,17 +167,22 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
         
         // Adding the right informations
-        if let url = NSURL(string: "http://www.hotel-r.net/im/hotel/fr/icone-12.png") {
-            if let data = NSData(contentsOf: url as URL) {
+        let url = URL.init(string: ingredient.imageUrl!)
+        if ingredient.imageUrl?.characters.count != 0 && url != nil {
+            if let data = try? Data.init(contentsOf: url!) {
                 cell.imageView?.image = UIImage(data: data as Data)
-            }        
+            }
+        } else if let url = URL.init(string: "http://www.hotel-r.net/im/hotel/fr/icone-12.png") {
+            if let data = try? Data.init(contentsOf: url) {
+                cell.imageView?.image = UIImage(data: data as Data)
+            }
         }
+        
         cell.textLabel?.text = ingredient.name
         cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
         
         // Returning the cell
         return cell
     }
-    
 }
 
