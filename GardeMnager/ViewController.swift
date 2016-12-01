@@ -100,16 +100,6 @@ class ViewController: UIViewController {
                 self.tableView.reloadData()
                 try! self.context?.save()
             }
-            print("start")
-            /*if let context = DataManager.shared.objectContext {
-             let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
-             if let ingredients = try? context.fetch(request) {
-             for i in ingredients {
-             print(i.name!)
-             }
-             }
-             }*/
-            print("end")
         }))
         
         // 4. Present the alert.
@@ -172,7 +162,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             if let data = try? Data.init(contentsOf: url!) {
                 cell.imageView?.image = UIImage(data: data as Data)
             }
-        } else if let url = URL.init(string: "http://www.hotel-r.net/im/hotel/fr/icone-12.png") {
+        } else if let url = URL.init(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/langfr-90px-Question_mark_alternate.svg.png") {
             if let data = try? Data.init(contentsOf: url) {
                 cell.imageView?.image = UIImage(data: data as Data)
             }
