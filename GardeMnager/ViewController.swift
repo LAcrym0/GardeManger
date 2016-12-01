@@ -159,6 +159,11 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
         
         // Adding the right informations
+        if let url = NSURL(string: "http://www.hotel-r.net/im/hotel/fr/icone-12.png") {
+            if let data = NSData(contentsOf: url as URL) {
+                cell.imageView?.image = UIImage(data: data as Data)
+            }        
+        }
         cell.textLabel?.text = ingredient.name
         cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
         
