@@ -46,7 +46,8 @@ class ViewController: UIViewController {
         tableView.delegate = self
         
         let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
-        navigationItem.rightBarButtonItems = [add]
+        let edit = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTapped))
+        navigationItem.rightBarButtonItems = [edit, add]
         
         self.title = "Garde Manger"
         
@@ -120,6 +121,86 @@ class ViewController: UIViewController {
         return -1
         
     }
+    
+    func editTapped() {
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "Retirer les recettes vendues", message: "Recette et quantité", preferredStyle: .alert)
+    
+        //2. Add the text field. You can configure it however you need.
+        /*alert.addTextField { (ingredientTextField) in
+         ingredientTextField.text = ""
+         ingredientTextField.placeholder = "Ingrédient"
+         }*/
+    
+        // TODO : Creer liste déroulante
+        var pickerFrame = CGRect(x: 17, y: 5, width: 270, height: 45)
+        var picker: UIPickerView = UIPickerView(frame: pickerFrame)
+        
+        picker.delegate = self
+        picker.dataSource = self
+        
+        alert.view.addSubview(picker)
+        
+    
+        alert.addTextField { (quantityTextField) in
+            quantityTextField.text = ""
+            quantityTextField.placeholder = "Quantité"
+            quantityTextField.keyboardType = UIKeyboardType.numberPad
+        }
+    
+    
+        // 3. Grab the value from the text field, and print it when the user clicks OK.
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+//            let recipeChoice = alert.selectionList![0] // Force unwrapping because we know it exists.
+
+            
+            
+            
+            let quantityField = alert.textFields![1]
+            
+            //print("Text field: \(textField.text)")
+//            if (self.context != nil) {
+//                if ( self.checkIngredientsForRecipe(name: picker.getChoice(), quantity: quantityField) != -1) {
+//                    for ingr in recipe.ingrs {
+//                        for i in 0 ..< ingredients.count {
+//                            if (ingredients[i].name == ingr.name) {
+//                                ingredients[i].quantity -= ingr.quantity*quantity
+//                            }
+//                        }
+//                        return 0
+//                    }
+//                }
+//                self.tableView.reloadData()
+//                try! self.context?.save()
+//            }
+            print("start")
+            /*if let context = DataManager.shared.objectContext {
+             let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
+             if let ingredients = try? context.fetch(request) {
+             for i in ingredients {
+             print(i.name!)
+             }
+             }
+             }*/
+            print("end")
+        }))
+    
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+//    func checkIngredientsForRecipe(name: String, quantity: int) -> Int {
+//        for ingr in recipe.ingrs {
+//            for i in 0 ..< ingredients.count {
+//                if (ingredients[i].name == ingr.name && ingredients[i].quantity < ingr.quantity*quantity) {
+//                    return -1
+//                }
+//            }
+//            return 0
+//        }
+//    }
+    
+    
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
