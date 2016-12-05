@@ -9,11 +9,13 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     weak var tableView: UITableView!
     var ingredients: [Ingredient] = []
+    var recipes: [Recipe] = []
     var context: NSManagedObjectContext?
+    var picker: UIPickerView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,14 +30,19 @@ class ViewController: UIViewController {
             print("#######")
             print(ingredients.count)
             print("#######")
-            //            let tomatoes = Ingredient(context: context)
-            //            tomatoes.name = "Tomates"
-            //            tomatoes.quantity = 5
-            //            let eggs = Ingredient(context: context)
-            //            eggs.name = "Oeufs"
-            //            eggs.quantity = 18
-            //            ingredients.append(tomatoes)
-            //            ingredients.append(eggs)
+            let eggs = Ingredient(context: self.context!)
+            eggs.name = "Oeufs"
+            eggs.quantity = 2
+            let tomatoes = Ingredient(context: self.context!)
+            tomatoes.name = "Tomates"
+            tomatoes.quantity = 4
+            let lasagnes = Recipe(context: context)
+            lasagnes.name = "Lasagnes"
+            lasagnes.addToIngredients(eggs)
+            lasagnes.addToIngredients(tomatoes)
+            recipes.append(contentsOf: [lasagnes, lasagnes, lasagnes])
+            
+            
         }
         
         let tableView = UITableView(frame: view.bounds)
@@ -44,6 +51,12 @@ class ViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.delegate = self
+        
+        let pickerFrame = CGRect(x: 0, y: 50, width: 270, height: 100)
+        picker = UIPickerView(frame: pickerFrame)
+        
+        picker?.delegate = self
+        picker?.dataSource = self
         
         let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
         let edit = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTapped))
@@ -125,54 +138,44 @@ class ViewController: UIViewController {
     func editTapped() {
         //1. Create the alert controller.
         let alert = UIAlertController(title: "Retirer les recettes vendues", message: "Recette et quantité", preferredStyle: .alert)
-    
-        //2. Add the text field. You can configure it however you need.
-        /*alert.addTextField { (ingredientTextField) in
-         ingredientTextField.text = ""
-         ingredientTextField.placeholder = "Ingrédient"
-         }*/
-    
+        
         // TODO : Creer liste déroulante
-        var pickerFrame = CGRect(x: 17, y: 5, width: 270, height: 45)
-        var picker: UIPickerView = UIPickerView(frame: pickerFrame)
         
-        picker.delegate = self
-        picker.dataSource = self
         
-        alert.view.addSubview(picker)
+        alert.view.addSubview(picker!)
         
-    
+        
         alert.addTextField { (quantityTextField) in
-            quantityTextField.text = ""
+            quantityTextField.text = "1"
             quantityTextField.placeholder = "Quantité"
             quantityTextField.keyboardType = UIKeyboardType.numberPad
         }
-    
-    
+        
+        
         // 3. Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-//            let recipeChoice = alert.selectionList![0] // Force unwrapping because we know it exists.
-
+            //            let recipeChoice = alert.selectionList![0] // Force unwrapping because we know it exists.
             
             
             
-            let quantityField = alert.textFields![1]
+            
+            //let quantityField = alert.textFields![1]
             
             //print("Text field: \(textField.text)")
-//            if (self.context != nil) {
-//                if ( self.checkIngredientsForRecipe(name: picker.getChoice(), quantity: quantityField) != -1) {
-//                    for ingr in recipe.ingrs {
-//                        for i in 0 ..< ingredients.count {
-//                            if (ingredients[i].name == ingr.name) {
-//                                ingredients[i].quantity -= ingr.quantity*quantity
-//                            }
-//                        }
-//                        return 0
-//                    }
-//                }
-//                self.tableView.reloadData()
-//                try! self.context?.save()
-//            }
+            //            if (self.context != nil) {
+            //                if ( self.checkIngredientsForRecipe(name: picker.getChoice(), quantity: quantityField) != -1) {
+            //                    for ingr in recipe.ingrs {
+            //                        for i in 0 ..< ingredients.count {
+            //                            if (ingredients[i].name == ingr.name) {
+            //                                ingredients[i].quantity -= ingr.quantity*quantity
+            //                            }
+            //                        }
+            //                        return 0
+            //                    }
+            //                }
+            //                self.tableView.reloadData()
+            //                try! self.context?.save()
+            //            }
             print("start")
             /*if let context = DataManager.shared.objectContext {
              let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
@@ -184,21 +187,21 @@ class ViewController: UIViewController {
              }*/
             print("end")
         }))
-    
+        
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }
     
-//    func checkIngredientsForRecipe(name: String, quantity: int) -> Int {
-//        for ingr in recipe.ingrs {
-//            for i in 0 ..< ingredients.count {
-//                if (ingredients[i].name == ingr.name && ingredients[i].quantity < ingr.quantity*quantity) {
-//                    return -1
-//                }
-//            }
-//            return 0
-//        }
-//    }
+    //    func checkIngredientsForRecipe(name: String, quantity: int) -> Int {
+    //        for ingr in recipe.ingrs {
+    //            for i in 0 ..< ingredients.count {
+    //                if (ingredients[i].name == ingr.name && ingredients[i].quantity < ingr.quantity*quantity) {
+    //                    return -1
+    //                }
+    //            }
+    //            return 0
+    //        }
+    //    }
     
     
     
@@ -218,8 +221,18 @@ class ViewController: UIViewController {
         }
     }
     
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
     
+    func pickerView(_ pickerView: UIPickerView,
+                    numberOfRowsInComponent component: Int) -> Int{
+        return recipes.count
+    }
     
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return recipes[row].name
+    }
     
 }
 
@@ -238,10 +251,16 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
         
         // Adding the right informations
-        let url = URL.init(string: ingredient.imageUrl!)
-        if ingredient.imageUrl?.characters.count != 0 && url != nil {
-            if let data = try? Data.init(contentsOf: url!) {
-                cell.imageView?.image = UIImage(data: data as Data)
+        if ingredient.imageUrl != nil {
+            let url = URL.init(string: ingredient.imageUrl!)
+            if ingredient.imageUrl?.characters.count != 0 && url != nil {
+                if let data = try? Data.init(contentsOf: url!) {
+                    cell.imageView?.image = UIImage(data: data as Data)
+                }
+            } else if let url = URL.init(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/langfr-90px-Question_mark_alternate.svg.png") {
+                if let data = try? Data.init(contentsOf: url) {
+                    cell.imageView?.image = UIImage(data: data as Data)
+                }
             }
         } else if let url = URL.init(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Question_mark_alternate.svg/langfr-90px-Question_mark_alternate.svg.png") {
             if let data = try? Data.init(contentsOf: url) {
@@ -249,11 +268,12 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             }
         }
         
-        cell.textLabel?.text = ingredient.name
-        cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
+            cell.textLabel?.text = ingredient.name
+            cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
+            
+            // Returning the cell
+            return cell
+        }
         
-        // Returning the cell
-        return cell
-    }
 }
 
