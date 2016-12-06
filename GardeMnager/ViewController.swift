@@ -17,7 +17,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     var context: NSManagedObjectContext?
     var picker: UIPickerView?
     var ingredientName: String?
-    var ingredientQuantity: Int?
+    var ingredientQuantity: Int32?
     var ingredientImageUrl: String?
     
     override func viewDidLoad() {
@@ -41,15 +41,15 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             tomatoes.quantity = 1
             let lasagnes = Recipe(context: context)
             lasagnes.name = "Lasagnes"
-            lasagnes.addToIngredients(eggs)
-            lasagnes.addToIngredients(tomatoes)
+            //lasagnes.addToIngredients(eggs)
+            //lasagnes.addToIngredients(tomatoes)
             
             eggs.quantity = 2
             tomatoes.quantity = 2
             let lasagnes2 = Recipe(context: context)
             lasagnes2.name = "Lasagnes2"
-            lasagnes2.addToIngredients(eggs)
-            lasagnes2.addToIngredients(tomatoes)
+            //lasagnes2.addToIngredients(eggs)
+            //lasagnes2.addToIngredients(tomatoes)
             
             let eggs2 = Ingredient(context: self.context!)
             eggs2.name = "Oeufs"
@@ -57,11 +57,11 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             let tomatoes2 = Ingredient(context: self.context!)
             tomatoes2.name = "Tomates"
             tomatoes2.quantity = 20
-
+            
             let lasagnes3 = Recipe(context: context)
             lasagnes3.name = "Lasagnes3"
-            lasagnes3.addToIngredients(eggs2)
-            lasagnes3.addToIngredients(tomatoes2)
+            //lasagnes3.addToIngredients(eggs2)
+            //lasagnes3.addToIngredients(tomatoes2)
             
             //print(lasagnes.ingredients?.allObjects)
             
@@ -113,61 +113,123 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             quantityTextField.keyboardType = UIKeyboardType.numberPad
         }
         
-        alert.addTextField { (imageUrlTextField) in
-            imageUrlTextField.text = ""
-            imageUrlTextField.placeholder = "URL de l'image"
-            imageUrlTextField.keyboardType = UIKeyboardType.URL
-        }
+        /*alert.addTextField { (imageUrlTextField) in
+         imageUrlTextField.text = ""
+         imageUrlTextField.placeholder = "URL de l'image"
+         imageUrlTextField.keyboardType = UIKeyboardType.URL
+         }*/
         
         /*alert.addTextField { (imageUrlTextField) in
-            imageUrlTextField.text = ""
-            imageUrlTextField.placeholder = "URL de l'image"
-            imageUrlTextField.keyboardType = UIKeyboardType.URL
-            imageUrlTextField.addTarget(self, action: #selector(self.getImage(alertDial:))
-, for: UIControlEvents.allTouchEvents)
-        }*/
-
+         imageUrlTextField.text = ""
+         imageUrlTextField.placeholder = "URL de l'image"
+         imageUrlTextField.keyboardType = UIKeyboardType.URL
+         imageUrlTextField.addTarget(self, action: #selector(self.getImage(alertDial:))
+         , for: UIControlEvents.allTouchEvents)
+         }*/
         
-       /* let btn = UIButton()
-        btn.setTitle("PICK", for: .normal)
-        btn.frame = CGRect(x: 100, y: 0, width: 200, height: 100)
-        alert.view.addSubview(btn)*/
-    
+        
+        /* let btn = UIButton()
+         btn.setTitle("PICK", for: .normal)
+         btn.frame = CGRect(x: 100, y: 0, width: 200, height: 100)
+         alert.view.addSubview(btn)*/
+        
         
         // 3. Grab the value from the text field, and print it when the user clicks OK.
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-            let ingredientField = alert.textFields![0] // Force unwrapping because we know it exists.
-            let quantityField = alert.textFields![1]
-            let imageUrlField = alert.textFields![2]
-            //print("Text field: \(textField.text)")
-            if (self.context != nil) {
-                let index = self.findIngredientIndex(name: ingredientField.text!)
-                if (index == -1) {
-                    let ingredient = Ingredient(context: self.context!)
-                    ingredient.name = ingredientField.text
-                    ingredient.quantity = Int32((quantityField.text! as NSString).integerValue)
-                    ingredient.imageUrl = imageUrlField.text
-                    self.ingredients.append(ingredient)
-                } else {
-                    self.ingredients[index].quantity += Int32((quantityField.text! as NSString).integerValue)
-                }
-                self.tableView.reloadData()
-                try! self.context?.save()
+        alert.addAction(UIAlertAction(title: "Ajouter l'image", style: .default, handler: { (_) in
+            if alert.textFields![0].text?.characters.count != 0 {
+            self.ingredientName = alert.textFields![0].text // Force unwrapping because we know it exists.
+            } else {
+                print("Can't create nameless ingredient")
+                return;
             }
+            if alert.textFields![1].text?.characters.count == 0 {
+                self.ingredientQuantity = 0
+            } else {
+                self.ingredientQuantity = Int32(alert.textFields![1].text!)
+            }
+            // let imageUrlField = alert.textFields![2]
+            //print("Text field: \(textField.text)")
+            
+            self.showImagePicker()
         }))
+        
+        alert.addAction(UIAlertAction(title: "Annuler", style: .destructive, handler: nil))
         
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }
     
-    
-    /*func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
-            //set the image to the imageView
-            //self.imageView.image = image
+    func showImagePicker() {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            //we set the UIImagePickerController and its paremeters
+            let pickerController = UIImagePickerController()
+            pickerController.sourceType = .photoLibrary //source = galery
+            pickerController.allowsEditing = false //after choosing the picture the user can't edit it
+            pickerController.delegate = self
+            pickerController.modalTransitionStyle = .crossDissolve
+            
+            //we show the pickerController
+            self.present(pickerController, animated: true, completion: nil)
+            
         }
+    }
+    
+    func save(url: String) {
+        print (url)
+        if (self.context != nil) {
+            
+            let ingredient = Ingredient(context: self.context!)
+            ingredient.name = ingredientName
+            ingredient.imageUrl = url
+            ingredient.quantity = ingredientQuantity!
+            ingredients.append(ingredient)
+            self.tableView.reloadData()
+            
+            //do { try! self.context?.save() }
+            
+            ingredientName = ""
+            ingredientQuantity = 0
+            ingredientImageUrl = ""
+        
+        }
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let imageURL = info[UIImagePickerControllerReferenceURL] as! NSURL
+        let imageName = imageURL.lastPathComponent
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! as String
+        let localPath = documentDirectory + imageName!
+        let photoURL = NSURL(fileURLWithPath: localPath)
         picker.dismiss(animated: true, completion: nil)
-    }*/
+        save(url: (photoURL.path)!)
+    }
+    
+    func saveImageDocumentDirectory(ingredientName: String){
+        let fileManager = FileManager.default
+        let paths = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent(ingredientName + ".jpg")
+        let image = UIImage(named: ingredientName + ".jpg")
+        print(paths)
+        let imageData = UIImageJPEGRepresentation(image!, 0.5)
+        fileManager.createFile(atPath: paths as String, contents: imageData, attributes: nil)
+    }
+    
+    func getDirectoryPath() -> String {
+        let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let documentsDirectory = paths[0]
+        return documentsDirectory
+    }
+    
+    func getImage(name: String) -> UIImage? {
+        let fileManager = FileManager.default
+        let imagePAth = (self.getDirectoryPath() as NSString).appendingPathComponent(".jpg")
+        if fileManager.fileExists(atPath: imagePAth){
+            return UIImage(contentsOfFile: imagePAth)!
+        }else{
+            return nil
+        }
+    }
+    
     /**
      * This method returns the index of the ingredient of a defined name, otherwise -1
      * @param The name of the ingredient to search
@@ -183,27 +245,27 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         
     }
     /*
-    func getImage(alertDial: UIAlertController) {
-        /*ingredientName = alert.textFields?[0].text
-        ingredientQuantity = Int((alert.textFields?[1].text)!)
-        if (alert.textFields?[2].text != nil) {
-            ingredientImageUrl = alert.textFields?[2].text
-        }*/
-        print("Called")
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            //we set the UIImagePickerController and its paremeters
-            let pickerController = UIImagePickerController()
-            pickerController.sourceType = .photoLibrary //source = galery
-            pickerController.allowsEditing = false //after choosing the picture the user can't edit it
-            pickerController.delegate = self
-            pickerController.modalTransitionStyle = .crossDissolve
-            
-            //we show the pickerController
-            alertDial.dismiss(animated: true, completion: {self.present(pickerController, animated: true, completion: nil)})
-            
-        }
-
-    }*/
+     func getImage(alertDial: UIAlertController) {
+     /*ingredientName = alert.textFields?[0].text
+     ingredientQuantity = Int((alert.textFields?[1].text)!)
+     if (alert.textFields?[2].text != nil) {
+     ingredientImageUrl = alert.textFields?[2].text
+     }*/
+     print("Called")
+     if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+     //we set the UIImagePickerController and its paremeters
+     let pickerController = UIImagePickerController()
+     pickerController.sourceType = .photoLibrary //source = galery
+     pickerController.allowsEditing = false //after choosing the picture the user can't edit it
+     pickerController.delegate = self
+     pickerController.modalTransitionStyle = .crossDissolve
+     
+     //we show the pickerController
+     alertDial.dismiss(animated: true, completion: {self.present(pickerController, animated: true, completion: nil)})
+     
+     }
+     
+     }*/
     
     func editTapped() {
         //1. Create the alert controller.
@@ -321,7 +383,13 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             ?? UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
         
         // Adding the right informations
+        
         if ingredient.imageUrl != nil {
+            if FileManager.default.fileExists(atPath: ingredient.imageUrl!) {
+                print("File exists")
+            } else {
+                print("File doesn't exist")
+            }
             let url = URL.init(string: ingredient.imageUrl!)
             if ingredient.imageUrl?.characters.count != 0 && url != nil {
                 if let data = try? Data.init(contentsOf: url!) {
@@ -338,12 +406,12 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             }
         }
         
-            cell.textLabel?.text = ingredient.name
-            cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
-            
-            // Returning the cell
-            return cell
-        }
+        cell.textLabel?.text = ingredient.name
+        cell.detailTextLabel?.text = String(format: "Quantité : %d", ingredient.quantity)
         
+        // Returning the cell
+        return cell
+    }
+    
 }
 
