@@ -9,13 +9,16 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     weak var tableView: UITableView!
     var ingredients: [Ingredient] = []
     var recipes: [Recipe] = []
     var context: NSManagedObjectContext?
     var picker: UIPickerView?
+    var ingredientName: String?
+    var ingredientQuantity: Int?
+    var ingredientImageUrl: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,8 +65,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             
             //print(lasagnes.ingredients?.allObjects)
             
-            recipes.append(contentsOf: [lasagnes, lasagnes2, lasagnes3])
-            
+            //recipes.append(contentsOf: [lasagnes, lasagnes2, lasagnes3])
             
         }
         
@@ -85,6 +87,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         navigationItem.rightBarButtonItems = [edit, add]
         
         self.title = "Garde Manger"
+        definesPresentationContext = true
         
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -116,24 +119,20 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             imageUrlTextField.keyboardType = UIKeyboardType.URL
         }
         
-        alert.addTextField { (TextField) in
-            TextField.text = ""
-            TextField.placeholder = "URL de l'image"
-            TextField.keyboardType = UIKeyboardType.URL
-            TextField.addTarget(self, action: imagePickerControlle, for: UIControlEvents.touchDown)
-        }
+        /*alert.addTextField { (imageUrlTextField) in
+            imageUrlTextField.text = ""
+            imageUrlTextField.placeholder = "URL de l'image"
+            imageUrlTextField.keyboardType = UIKeyboardType.URL
+            imageUrlTextField.addTarget(self, action: #selector(self.getImage(alertDial:))
+, for: UIControlEvents.allTouchEvents)
+        }*/
 
         
-        let btn = UIButton()
+       /* let btn = UIButton()
         btn.setTitle("PICK", for: .normal)
         btn.frame = CGRect(x: 100, y: 0, width: 200, height: 100)
-        alert.view.addSubview(btn)
-        
-//        let pickerFrame = CGRect(x: 0, y: 50, width: 270, height: 100)
-//        
-//        let pickPicture : UIButton = UIButton(frame: pickerFrame)
-//        
-//        alert.view.addSubview(pickPicture)
+        alert.view.addSubview(btn)*/
+    
         
         // 3. Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
@@ -161,15 +160,14 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         self.present(alert, animated: true, completion: nil)
     }
     
-    func test
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    /*func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            //set the image to the imageView
             //self.imageView.image = image
         }
         picker.dismiss(animated: true, completion: nil)
-    }
-    
+    }*/
     /**
      * This method returns the index of the ingredient of a defined name, otherwise -1
      * @param The name of the ingredient to search
@@ -184,6 +182,28 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         return -1
         
     }
+    /*
+    func getImage(alertDial: UIAlertController) {
+        /*ingredientName = alert.textFields?[0].text
+        ingredientQuantity = Int((alert.textFields?[1].text)!)
+        if (alert.textFields?[2].text != nil) {
+            ingredientImageUrl = alert.textFields?[2].text
+        }*/
+        print("Called")
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            //we set the UIImagePickerController and its paremeters
+            let pickerController = UIImagePickerController()
+            pickerController.sourceType = .photoLibrary //source = galery
+            pickerController.allowsEditing = false //after choosing the picture the user can't edit it
+            pickerController.delegate = self
+            pickerController.modalTransitionStyle = .crossDissolve
+            
+            //we show the pickerController
+            alertDial.dismiss(animated: true, completion: {self.present(pickerController, animated: true, completion: nil)})
+            
+        }
+
+    }*/
     
     func editTapped() {
         //1. Create the alert controller.
