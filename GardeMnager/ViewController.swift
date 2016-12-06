@@ -32,15 +32,37 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             print("#######")
             let eggs = Ingredient(context: self.context!)
             eggs.name = "Oeufs"
-            eggs.quantity = 2
+            eggs.quantity = 1
             let tomatoes = Ingredient(context: self.context!)
             tomatoes.name = "Tomates"
-            tomatoes.quantity = 4
+            tomatoes.quantity = 1
             let lasagnes = Recipe(context: context)
             lasagnes.name = "Lasagnes"
             lasagnes.addToIngredients(eggs)
             lasagnes.addToIngredients(tomatoes)
-            recipes.append(contentsOf: [lasagnes, lasagnes, lasagnes])
+            
+            eggs.quantity = 2
+            tomatoes.quantity = 2
+            let lasagnes2 = Recipe(context: context)
+            lasagnes2.name = "Lasagnes2"
+            lasagnes2.addToIngredients(eggs)
+            lasagnes2.addToIngredients(tomatoes)
+            
+            let eggs2 = Ingredient(context: self.context!)
+            eggs2.name = "Oeufs"
+            eggs2.quantity = 20
+            let tomatoes2 = Ingredient(context: self.context!)
+            tomatoes2.name = "Tomates"
+            tomatoes2.quantity = 20
+
+            let lasagnes3 = Recipe(context: context)
+            lasagnes3.name = "Lasagnes3"
+            lasagnes3.addToIngredients(eggs2)
+            lasagnes3.addToIngredients(tomatoes2)
+            
+            //print(lasagnes.ingredients?.allObjects)
+            
+            recipes.append(contentsOf: [lasagnes, lasagnes2, lasagnes3])
             
             
         }
@@ -94,6 +116,25 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             imageUrlTextField.keyboardType = UIKeyboardType.URL
         }
         
+        alert.addTextField { (TextField) in
+            TextField.text = ""
+            TextField.placeholder = "URL de l'image"
+            TextField.keyboardType = UIKeyboardType.URL
+            TextField.addTarget(self, action: imagePickerControlle, for: UIControlEvents.touchDown)
+        }
+
+        
+        let btn = UIButton()
+        btn.setTitle("PICK", for: .normal)
+        btn.frame = CGRect(x: 100, y: 0, width: 200, height: 100)
+        alert.view.addSubview(btn)
+        
+//        let pickerFrame = CGRect(x: 0, y: 50, width: 270, height: 100)
+//        
+//        let pickPicture : UIButton = UIButton(frame: pickerFrame)
+//        
+//        alert.view.addSubview(pickPicture)
+        
         // 3. Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             let ingredientField = alert.textFields![0] // Force unwrapping because we know it exists.
@@ -118,6 +159,15 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func test
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            //self.imageView.image = image
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
     
     /**
