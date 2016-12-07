@@ -40,6 +40,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 ingredientRecipes.append(contentsOf: ingredientRecipesBDD)
             }
             
+            
             print("#######")
             print(ingredients.count)
             print("#######")
@@ -64,6 +65,16 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 recipes.append(burger)
             }
             
+            if findRecipeIndex(name: "Tarte aux pommes") == -1 {
+                let applePie = Recipe(context: context)
+                applePie.name = "Tarte aux pommes"
+                addIngredient(withName: "Sucre", quantity: 3, toRecipe: applePie)
+                addIngredient(withName: "Pommes", quantity: 5, toRecipe: applePie)
+                addIngredient(withName: "Pâte feuilletée", quantity: 1, toRecipe: applePie)
+                addIngredient(withName: "Beurre", quantity: 2, toRecipe: applePie)
+                recipes.append(applePie)
+            }
+            
             
         }
         
@@ -74,7 +85,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         tableView.dataSource = self
         tableView.delegate = self
         
-        let pickerFrame = CGRect(x: 0, y: 0, width: 200, height: 70)
+        let pickerFrame = CGRect(x: 0, y: 150, width: 270, height: 70)
         picker = UIPickerView(frame: pickerFrame)
         
         picker?.delegate = self
@@ -277,6 +288,9 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         //1. Create the alert controller.
         let alert = UIAlertController(title: "Retirer les recettes vendues", message: "Recette et quantité", preferredStyle: .alert)
         
+        let height:NSLayoutConstraint = NSLayoutConstraint(item: alert.view, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: self.view.frame.height * 0.35)
+        alert.view.addConstraint(height);
+        
         // TODO : Creer liste déroulante
         
         
@@ -293,45 +307,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         //Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             print("start")
-            //TODO here is the way to find a ingredient
-            //if let recipeIngredients = self.context?.existingObject(with: recipeId) {}
-            /*for item in self.ingredientRecipes {//every ingredientRecipe
-             print("Passage")
-             let selectedRecipe = self.picker?.selectedRow(inComponent: 0)
-             if selectedRecipe != -1 {
-             if item.idRecipe! == self.recipes[selectedRecipe!].objectID.uriRepresentation().absoluteString {//if this is an ingredient of the correct recipe
-             var error = true
-             for ingredient in self.ingredients {//check every ingredient
-             print("Ici")
-             if ingredient.objectID.uriRepresentation().absoluteString == item.idIngredient {//if this ingredient is in the recipe
-             if Int32(alert.textFields![0].text!)! < 0 {
-             break
-             }
-             ingredient.quantity -= item.quantity * Int32(alert.textFields![0].text!)!  //decrement the quantity
-             if ingredient.quantity < 0 {
-             ingredient.quantity = 0
-             } else {
-             error = false
-             }
-             print("Found")
-             }
-             }
-             if error == true {
-             let alertError = UIAlertController(title: "Erreur", message: "Impossible, il manque des ingrédients", preferredStyle: .alert)
-             alertError.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-             alertError.dismiss(animated: true, completion: nil)
-             }))
-             alert.dismiss(animated: true, completion: nil)
-             self.context?.undo()
-             self.present(alertError, animated: true, completion: nil)
-             
-             } else {
-             self.tableView.reloadData()
-             alert.dismiss(animated: true, completion: nil)
-             }
-             }
-             }
-             }*/
             var error = true
             for ingredient in self.ingredients {//every ingredientRecipe
                 print("Passage")
@@ -400,7 +375,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return recipes[row].name
     }
-    
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
