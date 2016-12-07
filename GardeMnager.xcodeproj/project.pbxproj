@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9520EA410B0BCC7B19FE967 /* Pods_GardeMnager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B299BC81074FD121D7F6115B /* Pods_GardeMnager.framework */; };
+		C3B53F681DF8188000DEB338 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = C3B53F671DF8188000DEB338 /* placeholder.png */; };
 		C3DF87811DDCAEC7005EE858 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF87801DDCAEC7005EE858 /* AppDelegate.swift */; };
 		C3DF87831DDCAEC7005EE858 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF87821DDCAEC7005EE858 /* ViewController.swift */; };
 		C3DF87891DDCAEC7005EE858 /* GardeMnager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C3DF87871DDCAEC7005EE858 /* GardeMnager.xcdatamodeld */; };
@@ -37,6 +39,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		10133F692D3ED826AD9C7DCA /* Pods-GardeMnager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GardeMnager.release.xcconfig"; path = "Pods/Target Support Files/Pods-GardeMnager/Pods-GardeMnager.release.xcconfig"; sourceTree = "<group>"; };
+		3AE44AA66C5B7BF721039A8A /* Pods-GardeMnager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GardeMnager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-GardeMnager/Pods-GardeMnager.debug.xcconfig"; sourceTree = "<group>"; };
+		B299BC81074FD121D7F6115B /* Pods_GardeMnager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GardeMnager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3B53F671DF8188000DEB338 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
 		C3DF877D1DDCAEC7005EE858 /* GardeMnager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GardeMnager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3DF87801DDCAEC7005EE858 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C3DF87821DDCAEC7005EE858 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -60,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9520EA410B0BCC7B19FE967 /* Pods_GardeMnager.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +87,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		30ED7DB458C55BEAF8660942 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3AE44AA66C5B7BF721039A8A /* Pods-GardeMnager.debug.xcconfig */,
+				10133F692D3ED826AD9C7DCA /* Pods-GardeMnager.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		8961556626C833C8DE5128FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B299BC81074FD121D7F6115B /* Pods_GardeMnager.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C3DF87741DDCAEC7005EE858 = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +111,8 @@
 				C3DF87971DDCAEC7005EE858 /* GardeMnagerTests */,
 				C3DF87A21DDCAEC7005EE858 /* GardeMnagerUITests */,
 				C3DF877E1DDCAEC7005EE858 /* Products */,
+				30ED7DB458C55BEAF8660942 /* Pods */,
+				8961556626C833C8DE5128FB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -103,6 +129,7 @@
 		C3DF877F1DDCAEC7005EE858 /* GardeMnager */ = {
 			isa = PBXGroup;
 			children = (
+				C3B53F671DF8188000DEB338 /* placeholder.png */,
 				C3DF87801DDCAEC7005EE858 /* AppDelegate.swift */,
 				C3DF87821DDCAEC7005EE858 /* ViewController.swift */,
 				C3DF878A1DDCAEC7005EE858 /* Assets.xcassets */,
@@ -141,9 +168,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C3DF87A81DDCAEC7005EE858 /* Build configuration list for PBXNativeTarget "GardeMnager" */;
 			buildPhases = (
+				A7CB1136D9F5148E19354A05 /* [CP] Check Pods Manifest.lock */,
 				C3DF87791DDCAEC7005EE858 /* Sources */,
 				C3DF877A1DDCAEC7005EE858 /* Frameworks */,
 				C3DF877B1DDCAEC7005EE858 /* Resources */,
+				58A7D3A593C48DEA4084023F /* [CP] Embed Pods Frameworks */,
+				F42D4B208DEE7172596751F1 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -242,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3DF878E1DDCAEC7005EE858 /* LaunchScreen.storyboard in Resources */,
+				C3B53F681DF8188000DEB338 /* placeholder.png in Resources */,
 				C3DF878B1DDCAEC7005EE858 /* Assets.xcassets in Resources */,
 				C3DF87B21DDCB2C8005EE858 /* Main.storyboard in Resources */,
 			);
@@ -262,6 +293,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		58A7D3A593C48DEA4084023F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GardeMnager/Pods-GardeMnager-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A7CB1136D9F5148E19354A05 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F42D4B208DEE7172596751F1 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-GardeMnager/Pods-GardeMnager-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C3DF87791DDCAEC7005EE858 /* Sources */ = {
@@ -414,6 +493,7 @@
 		};
 		C3DF87A91DDCAEC7005EE858 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AE44AA66C5B7BF721039A8A /* Pods-GardeMnager.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GardeMnager/Info.plist;
@@ -426,6 +506,7 @@
 		};
 		C3DF87AA1DDCAEC7005EE858 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 10133F692D3ED826AD9C7DCA /* Pods-GardeMnager.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GardeMnager/Info.plist;
