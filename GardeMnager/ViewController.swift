@@ -150,7 +150,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 self.ingredientQuantity = Int32(alert.textFields![1].text!)
             }
             self.ingredientImageUrl = alert.textFields![2].text?.characters.count == 0 ? "" : alert.textFields![2].text
-            self.createNewIngredient(name: self.ingredientName!, url: self.ingredientImageUrl!, quantity: self.ingredientQuantity!)
+            let index = self.findIngredientIndex(name: self.ingredientName!)
+            if index == -1 {
+                self.createNewIngredient(name: self.ingredientName!, url: self.ingredientImageUrl!, quantity: self.ingredientQuantity!)
+            } else {
+                self.ingredients[index].quantity += self.ingredientQuantity!
+            }
             self.tableView.reloadData()
             
         }))
@@ -273,8 +278,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         //Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
             print("start")
-            var error = true
             for ingredient in self.ingredients {//every ingredientRecipe
+                var error = true
                 print("Passage")
                 let selectedRecipe = self.picker?.selectedRow(inComponent: 0)
                 if selectedRecipe != -1 {
@@ -293,20 +298,21 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                         print("Found")
                     }
                 }
+                if error == true {
+                    let alertError = UIAlertController(title: "Erreur", message: "Impossible, il manque des ingrédients", preferredStyle: .alert)
+                    alertError.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+                        alertError.dismiss(animated: true, completion: nil)
+                    }))
+                    alert.dismiss(animated: true, completion: nil)
+                    self.context?.undo()
+                    self.present(alertError, animated: true, completion: nil)
+                    
+                } else {
+                    self.tableView.reloadData()
+                    alert.dismiss(animated: true, completion: nil)
+                }
             }
-            if error == true {
-                let alertError = UIAlertController(title: "Erreur", message: "Impossible, il manque des ingrédients", preferredStyle: .alert)
-                alertError.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-                    alertError.dismiss(animated: true, completion: nil)
-                }))
-                alert.dismiss(animated: true, completion: nil)
-                self.context?.undo()
-                self.present(alertError, animated: true, completion: nil)
-                
-            } else {
-                self.tableView.reloadData()
-                alert.dismiss(animated: true, completion: nil)
-            }
+            
             try? self.context?.save()
             print("end")
         }))
