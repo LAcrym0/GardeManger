@@ -4,12 +4,22 @@
         <attribute name="imageUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="relationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IngredientRecipe" inverseName="ingredientTable" inverseEntity="IngredientRecipe" syncable="YES"/>
+    </entity>
+    <entity name="IngredientRecipe" representedClassName="IngredientRecipe" syncable="YES" codeGenerationType="class">
+        <attribute name="idIngredient" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="idRecipe" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="ingredientFromRecipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="relationship" inverseEntity="Recipe" syncable="YES"/>
+        <relationship name="ingredientTable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ingredient" inverseName="relationship" inverseEntity="Ingredient" syncable="YES"/>
     </entity>
     <entity name="Recipe" representedClassName="Recipe" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="relationship" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IngredientRecipe" inverseName="ingredientFromRecipe" inverseEntity="IngredientRecipe" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Ingredient" positionX="-20" positionY="-90" width="128" height="88"/>
-        <element name="Recipe" positionX="225" positionY="-90" width="126" height="58"/>
+        <element name="Ingredient" positionX="-20" positionY="-90" width="128" height="103"/>
+        <element name="Recipe" positionX="315" positionY="-90" width="126" height="73"/>
+        <element name="IngredientRecipe" positionX="144" positionY="-90" width="128" height="118"/>
     </elements>
 </model>

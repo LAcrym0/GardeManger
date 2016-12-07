@@ -14,6 +14,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     weak var tableView: UITableView!
     var ingredients: [Ingredient] = []
     var recipes: [Recipe] = []
+    var ingredientRecipes: [IngredientRecipe] = []
     var context: NSManagedObjectContext?
     var picker: UIPickerView?
     var ingredientName: String?
@@ -26,46 +27,43 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         if let context = DataManager.shared.objectContext {
             
             self.context = context
-            let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
-            if let ingredientsBDD = try? context.fetch(request) {
+            let ingRequest: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
+            if let ingredientsBDD = try? context.fetch(ingRequest) {
                 ingredients.append(contentsOf: ingredientsBDD)
             }
+            let recRequest: NSFetchRequest<Recipe> = Recipe.fetchRequest()
+            if let recipesBDD = try? context.fetch(recRequest) {
+                recipes.append(contentsOf: recipesBDD)
+            }
+            let ingRecRequest: NSFetchRequest<IngredientRecipe> = IngredientRecipe.fetchRequest()
+            if let ingredientRecipesBDD = try? context.fetch(ingRecRequest) {
+                ingredientRecipes.append(contentsOf: ingredientRecipesBDD)
+            }
+            
             print("#######")
             print(ingredients.count)
             print("#######")
-            let eggs = Ingredient(context: self.context!)
-            eggs.name = "Oeufs"
-            eggs.quantity = 1
-            let tomatoes = Ingredient(context: self.context!)
-            tomatoes.name = "Tomates"
-            tomatoes.quantity = 1
-            let lasagnes = Recipe(context: context)
-            lasagnes.name = "Lasagnes"
-            //lasagnes.addToIngredients(eggs)
-            //lasagnes.addToIngredients(tomatoes)
             
-            eggs.quantity = 2
-            tomatoes.quantity = 2
-            let lasagnes2 = Recipe(context: context)
-            lasagnes2.name = "Lasagnes2"
-            //lasagnes2.addToIngredients(eggs)
-            //lasagnes2.addToIngredients(tomatoes)
+            if findRecipeIndex(name: "Lasagnes") == -1 {
+                let lasagnes = Recipe(context: context)
+                lasagnes.name = "Lasagnes"
+                addIngredient(withName: "Oeufs", quantity: 2, toRecipe: lasagnes)
+                addIngredient(withName: "Tomates", quantity: 4, toRecipe: lasagnes)
+                addIngredient(withName: "Steaks", quantity: 5, toRecipe: lasagnes)
+                recipes.append(lasagnes)
+            }
             
-            let eggs2 = Ingredient(context: self.context!)
-            eggs2.name = "Oeufs"
-            eggs2.quantity = 20
-            let tomatoes2 = Ingredient(context: self.context!)
-            tomatoes2.name = "Tomates"
-            tomatoes2.quantity = 20
+            if findRecipeIndex(name: "Burger") == -1 {
+                let burger = Recipe(context: context)
+                burger.name = "Burger"
+                addIngredient(withName: "Bacon", quantity: 2, toRecipe: burger)
+                addIngredient(withName: "Pains", quantity: 2, toRecipe: burger)
+                addIngredient(withName: "Steaks", quantity: 1, toRecipe: burger)
+                addIngredient(withName: "Fromages", quantity: 2, toRecipe: burger)
+                addIngredient(withName: "Tomates", quantity: 1, toRecipe: burger)
+                recipes.append(burger)
+            }
             
-            let lasagnes3 = Recipe(context: context)
-            lasagnes3.name = "Lasagnes3"
-            //lasagnes3.addToIngredients(eggs2)
-            //lasagnes3.addToIngredients(tomatoes2)
-            
-            //print(lasagnes.ingredients?.allObjects)
-            
-            //recipes.append(contentsOf: [lasagnes, lasagnes2, lasagnes3])
             
         }
         
@@ -76,7 +74,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         tableView.dataSource = self
         tableView.delegate = self
         
-        let pickerFrame = CGRect(x: 0, y: 50, width: 270, height: 100)
+        let pickerFrame = CGRect(x: 0, y: 0, width: 200, height: 70)
         picker = UIPickerView(frame: pickerFrame)
         
         picker?.delegate = self
@@ -87,7 +85,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         navigationItem.rightBarButtonItems = [edit, add]
         
         self.title = "Garde Manger"
-        definesPresentationContext = true
         
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -113,31 +110,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             quantityTextField.keyboardType = UIKeyboardType.numberPad
         }
         
-        /*alert.addTextField { (imageUrlTextField) in
-         imageUrlTextField.text = ""
-         imageUrlTextField.placeholder = "URL de l'image"
-         imageUrlTextField.keyboardType = UIKeyboardType.URL
-         }*/
-        
-        /*alert.addTextField { (imageUrlTextField) in
-         imageUrlTextField.text = ""
-         imageUrlTextField.placeholder = "URL de l'image"
-         imageUrlTextField.keyboardType = UIKeyboardType.URL
-         imageUrlTextField.addTarget(self, action: #selector(self.getImage(alertDial:))
-         , for: UIControlEvents.allTouchEvents)
-         }*/
         
         
-        /* let btn = UIButton()
-         btn.setTitle("PICK", for: .normal)
-         btn.frame = CGRect(x: 100, y: 0, width: 200, height: 100)
-         alert.view.addSubview(btn)*/
-        
-        
-        // 3. Grab the value from the text field, and print it when the user clicks OK.
+        // Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "Ajouter l'image", style: .default, handler: { (_) in
             if alert.textFields![0].text?.characters.count != 0 {
-            self.ingredientName = alert.textFields![0].text // Force unwrapping because we know it exists.
+                self.ingredientName = alert.textFields![0].text // Force unwrapping because we know it exists.
             } else {
                 print("Can't create nameless ingredient")
                 return;
@@ -159,6 +137,35 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         self.present(alert, animated: true, completion: nil)
     }
     
+    func addIngredient(withName: String, quantity: Int, toRecipe: Recipe) {
+        let index = findIngredientIndex(name: withName)
+        var id: String
+        if index == -1 {
+            id = createNewIngredient(name: withName)
+        } else {
+            id = ingredients[index].objectID.uriRepresentation().absoluteString
+        }
+        print(withName + " " + id)
+        if findIngredientRecipeIndex(idRecipe: toRecipe.objectID.uriRepresentation().absoluteString, idIngredient: id) == -1 {
+            let ingredientRecipe = IngredientRecipe(context: self.context!)
+            ingredientRecipe.idIngredient = id
+            ingredientRecipe.idRecipe = toRecipe.objectID.uriRepresentation().absoluteString
+            ingredientRecipe.quantity = Int32(quantity)
+            try? self.context?.save()
+            ingredientRecipes.append(ingredientRecipe)
+        }
+    }
+    
+    func createNewIngredient(name: String) -> String {
+        let ingredient = Ingredient(context: self.context!)
+        ingredient.quantity = 50
+        ingredient.name = name
+        try? self.context?.save()
+        let id = ingredient.objectID.uriRepresentation().absoluteString
+        ingredients.append(ingredient)
+        return id
+    }
+    
     func showImagePicker() {
         if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
             //we set the UIImagePickerController and its paremeters
@@ -177,20 +184,24 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     func save(url: String) {
         print (url)
         if (self.context != nil) {
-            
-            let ingredient = Ingredient(context: self.context!)
-            ingredient.name = ingredientName
-            ingredient.imageUrl = url
-            ingredient.quantity = ingredientQuantity!
-            ingredients.append(ingredient)
+            let index = findIngredientIndex(name: ingredientName!)
+            if index == -1 {
+                let ingredient = Ingredient(context: self.context!)
+                ingredient.name = ingredientName
+                ingredient.imageUrl = url
+                ingredient.quantity = ingredientQuantity!
+                ingredients.append(ingredient)
+            } else {
+                ingredients[index].quantity += Int32(ingredientQuantity!)
+            }
             self.tableView.reloadData()
             
-            //do { try! self.context?.save() }
+            do { try! self.context?.save() }
             
             ingredientName = ""
             ingredientQuantity = 0
             ingredientImageUrl = ""
-        
+            
         }
     }
     
@@ -242,30 +253,25 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             }
         }
         return -1
-        
     }
-    /*
-     func getImage(alertDial: UIAlertController) {
-     /*ingredientName = alert.textFields?[0].text
-     ingredientQuantity = Int((alert.textFields?[1].text)!)
-     if (alert.textFields?[2].text != nil) {
-     ingredientImageUrl = alert.textFields?[2].text
-     }*/
-     print("Called")
-     if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-     //we set the UIImagePickerController and its paremeters
-     let pickerController = UIImagePickerController()
-     pickerController.sourceType = .photoLibrary //source = galery
-     pickerController.allowsEditing = false //after choosing the picture the user can't edit it
-     pickerController.delegate = self
-     pickerController.modalTransitionStyle = .crossDissolve
-     
-     //we show the pickerController
-     alertDial.dismiss(animated: true, completion: {self.present(pickerController, animated: true, completion: nil)})
-     
-     }
-     
-     }*/
+    
+    func findRecipeIndex(name: String) -> Int {
+        for i in 0 ..< recipes.count {
+            if (recipes[i].name == name) {
+                return i
+            }
+        }
+        return -1
+    }
+    
+    func findIngredientRecipeIndex(idRecipe: String, idIngredient: String) -> Int {
+        for i in 0 ..< ingredientRecipes.count {
+            if (ingredientRecipes[i].idRecipe == idRecipe && ingredientRecipes[i].idIngredient == idIngredient) {
+                return i
+            }
+        }
+        return -1
+    }
     
     func editTapped() {
         //1. Create the alert controller.
@@ -284,58 +290,88 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         }
         
         
-        // 3. Grab the value from the text field, and print it when the user clicks OK.
+        //Grab the value from the text field, and print it when the user clicks OK.
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-            //            let recipeChoice = alert.selectionList![0] // Force unwrapping because we know it exists.
-            
-            
-            
-            
-            //let quantityField = alert.textFields![1]
-            
-            //print("Text field: \(textField.text)")
-            //            if (self.context != nil) {
-            //                if ( self.checkIngredientsForRecipe(name: picker.getChoice(), quantity: quantityField) != -1) {
-            //                    for ingr in recipe.ingrs {
-            //                        for i in 0 ..< ingredients.count {
-            //                            if (ingredients[i].name == ingr.name) {
-            //                                ingredients[i].quantity -= ingr.quantity*quantity
-            //                            }
-            //                        }
-            //                        return 0
-            //                    }
-            //                }
-            //                self.tableView.reloadData()
-            //                try! self.context?.save()
-            //            }
             print("start")
-            /*if let context = DataManager.shared.objectContext {
-             let request: NSFetchRequest<Ingredient> = Ingredient.fetchRequest()
-             if let ingredients = try? context.fetch(request) {
-             for i in ingredients {
-             print(i.name!)
+            //TODO here is the way to find a ingredient
+            //if let recipeIngredients = self.context?.existingObject(with: recipeId) {}
+            /*for item in self.ingredientRecipes {//every ingredientRecipe
+             print("Passage")
+             let selectedRecipe = self.picker?.selectedRow(inComponent: 0)
+             if selectedRecipe != -1 {
+             if item.idRecipe! == self.recipes[selectedRecipe!].objectID.uriRepresentation().absoluteString {//if this is an ingredient of the correct recipe
+             var error = true
+             for ingredient in self.ingredients {//check every ingredient
+             print("Ici")
+             if ingredient.objectID.uriRepresentation().absoluteString == item.idIngredient {//if this ingredient is in the recipe
+             if Int32(alert.textFields![0].text!)! < 0 {
+             break
+             }
+             ingredient.quantity -= item.quantity * Int32(alert.textFields![0].text!)!  //decrement the quantity
+             if ingredient.quantity < 0 {
+             ingredient.quantity = 0
+             } else {
+             error = false
+             }
+             print("Found")
+             }
+             }
+             if error == true {
+             let alertError = UIAlertController(title: "Erreur", message: "Impossible, il manque des ingrédients", preferredStyle: .alert)
+             alertError.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+             alertError.dismiss(animated: true, completion: nil)
+             }))
+             alert.dismiss(animated: true, completion: nil)
+             self.context?.undo()
+             self.present(alertError, animated: true, completion: nil)
+             
+             } else {
+             self.tableView.reloadData()
+             alert.dismiss(animated: true, completion: nil)
+             }
              }
              }
              }*/
+            var error = true
+            for ingredient in self.ingredients {//every ingredientRecipe
+                print("Passage")
+                let selectedRecipe = self.picker?.selectedRow(inComponent: 0)
+                if selectedRecipe != -1 {
+                    let idRecipe = self.recipes[selectedRecipe!].objectID.uriRepresentation().absoluteString //if this is an ingredient of the correct recipe
+                    let ingredientRecipeIndex = self.findIngredientRecipeIndex(idRecipe: idRecipe, idIngredient: ingredient.objectID.uriRepresentation().absoluteString)
+                    if (ingredientRecipeIndex != -1) {
+                        if Int32(alert.textFields![0].text!)! < 0 {
+                            break
+                        }
+                        ingredient.quantity -= self.ingredientRecipes[ingredientRecipeIndex].quantity * Int32(alert.textFields![0].text!)!  //decrement the quantity
+                        if ingredient.quantity < 0 {
+                            ingredient.quantity = 0
+                        } else {
+                            error = false
+                        }
+                        print("Found")
+                    }
+                }
+            }
+            if error == true {
+                let alertError = UIAlertController(title: "Erreur", message: "Impossible, il manque des ingrédients", preferredStyle: .alert)
+                alertError.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
+                    alertError.dismiss(animated: true, completion: nil)
+                }))
+                alert.dismiss(animated: true, completion: nil)
+                self.context?.undo()
+                self.present(alertError, animated: true, completion: nil)
+                
+            } else {
+                self.tableView.reloadData()
+                alert.dismiss(animated: true, completion: nil)
+            }
+            try? self.context?.save()
             print("end")
         }))
         
-        // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }
-    
-    //    func checkIngredientsForRecipe(name: String, quantity: int) -> Int {
-    //        for ingr in recipe.ingrs {
-    //            for i in 0 ..< ingredients.count {
-    //                if (ingredients[i].name == ingr.name && ingredients[i].quantity < ingr.quantity*quantity) {
-    //                    return -1
-    //                }
-    //            }
-    //            return 0
-    //        }
-    //    }
-    
-    
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
@@ -348,7 +384,6 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 print("Error While Deleting Note: \(error.userInfo)")
             }
             tableView.deleteRows(at: [indexPath], with: .fade)
-            //try! self.context?.save()
             //TODO save if because the previous line doesn't not save the deletion
         }
     }
